@@ -15,7 +15,7 @@ Este proyecto es un backend completo en Java con Spring Boot para la gestión de
 - Usuarios  
 - Roles (ADMIN / USER)  
 - Seguridad con JWT
-- 
+  
 
 Este proyecto forma parte de mi portfolio técnico para optar a prácticas FCT (DAM).
 Aspiro a seguir creciendo como desarrollador backend, aprendiendo buenas prácticas y
