@@ -19,8 +19,7 @@ Este proyecto es un backend completo en Java con Spring Boot para la gestión de
 
 Este proyecto forma parte de mi portfolio técnico para optar a prácticas FCT (DAM).
 Aspiro a seguir creciendo como desarrollador backend, aprendiendo buenas prácticas y
-tecnologias modernas como microservicios, Docker y servicios cloud. Aunque actualmente tambien estoy
-estudiando Angular para completar la interfaz grafica de este proyecto.
+tecnologias modernas como microservicios, Docker y servicios cloud.
 
 --------------------------------------------------------------------------------------------------
 
