@@ -33,7 +33,10 @@ tecnologias modernas como microservicios, Docker y servicios cloud.
 - Hibernate  
 - MySQL  
 - Lombok  
-- Maven  
+- Maven
+- JUnit
+- Mockito
+- Postman
 
 --------------------------------------------------------------------------------------------------
 
@@ -72,7 +75,19 @@ Tablas principales:
 
 Las relaciones están gestionadas mediante JPA + Hibernate.
 
+
+--------------------------------------------------------------------------------------------------
+
+🧪 Testing (JUnit + Mockito)
+
+El proyecto incluye pruebas unitarias básicas para la capa de servicio usando:
+
+- JUnit 5
+- Mockito
+
+
 ---------------------------------------------------------------------------------------------------
+
 *️⃣ Importante para poder arrancar el proyecto:
 
 Para ejecutar este backend es necesario tener MySQL instalado y en funcionamiento en el equipo.
