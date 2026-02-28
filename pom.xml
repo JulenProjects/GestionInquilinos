@@ -131,6 +131,17 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Dependencias de testing (solo para tests):
+incluye JUnit 5 + Mockito + Spring Test para tests unitarios y de integración,
+y se usa únicamente en src/test/java (no se empaqueta en producción). -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<!-- ================= -->
