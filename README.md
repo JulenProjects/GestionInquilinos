@@ -17,9 +17,8 @@ Este proyecto es un backend completo en Java con Spring Boot para la gestión de
 - Seguridad con JWT
   
 
-Este proyecto forma parte de mi portfolio técnico para optar a prácticas FCT (DAM).
-Aspiro a seguir creciendo como desarrollador backend, aprendiendo buenas prácticas y
-tecnologias modernas como microservicios, Docker y servicios cloud.
+Este proyecto forma parte de mi portfolio técnico,
+y tiene como objetivo mostrar mis habilidades en desarrollo backend.
 
 --------------------------------------------------------------------------------------------------
 
