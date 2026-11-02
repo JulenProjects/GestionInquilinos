@@ -1,41 +1,50 @@
 -------------------------------------------------------------------------------------------------------
 
 
-🏠 Sistema de Gestión de Inquilinos - Backend en Spring Boot
-
-
--------------------------------------------------------------------------------------------------------
-
+🏠 Sistema de Gestión de Inquilinos - Backend en Spring Boot + Panel Web
 
 Este proyecto es un backend completo en Java con Spring Boot para la gestión de:
 
-- Inquilinos  
-- Inmuebles  
-- Pagos  
-- Usuarios  
-- Roles (ADMIN / USER)  
-- Seguridad con JWT
-  
+* Inquilinos
+* Inmuebles
+* Pagos
+* Usuarios
+* Roles (ADMIN / USER)
+* Seguridad con JWT
 
-Este proyecto forma parte de mi portfolio técnico,
-y tiene como objetivo mostrar mis habilidades en desarrollo backend.
+Incluye un panel web para interactuar con la API y está completamente dockerizado:
+frontend, backend y base de datos se levantan con un solo comando.
+
+
 
 --------------------------------------------------------------------------------------------------
 
+
 🚀 Tecnologías utilizadas
 
-- Java 21  
-- Spring Boot 3  
-- Spring Security  
-- JWT (Json Web Tokens)  
-- Spring Data JPA  
-- Hibernate  
-- MySQL  
-- Lombok  
-- Maven
-- JUnit
-- Mockito
-- Postman
+Backend
+* Java 21
+* Spring Boot 3
+* Spring Security
+* JWT (JSON Web Tokens)
+* Spring Data JPA
+* Hibernate
+* MySQL
+* Lombok
+* Maven
+
+Testing
+* JUnit 5
+* Mockito
+* Postman
+
+Frontend
+* HTML, CSS y JavaScript (desarrollado con apoyo de IA para visualizar y probar la API)
+
+Despliegue
+* Docker
+* Docker Compose
+* Nginx
 
 --------------------------------------------------------------------------------------------------
 
@@ -194,8 +203,7 @@ GET    http://localhost:8080/pagos/listado/porFecha/{anio}/{mes} (Mes en formato
 ------------------------------------------------------------------------------------------------
 
 
-✅ Continuaré ampliando y mejorando este proyecto mientras avanzo en mi formación y crecimiento
-como desarrollador, manteniéndolo abierto a mejoras y contribuciones.
+✅ Continuaré ampliando y mejorando este proyecto, manteniéndolo abierto a mejoras y contribuciones.
 
 
 
