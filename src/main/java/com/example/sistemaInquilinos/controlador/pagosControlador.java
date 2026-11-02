@@ -122,6 +122,7 @@ public class pagosControlador {
         // Se actualizan los datos del pago
         pagoBD.setAnio(pagoRecibido.getAnio());
         pagoBD.setMes(pagoRecibido.getMes());
+        pagoBD.setPrecioAlquiler(pagoRecibido.getPrecioAlquiler());
         pagoBD.setMontoDeuda(pagoRecibido.getMontoDeuda());
         pagoBD.setPagado(pagoRecibido.getPagado());
         pagoBD.setInquilino(pagoRecibido.getInquilino());
