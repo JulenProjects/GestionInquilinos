@@ -87,24 +87,25 @@ El proyecto incluye pruebas unitarias básicas para la capa de servicio usando:
 
 ---------------------------------------------------------------------------------------------------
 
-*️⃣ Importante para poder arrancar el proyecto:
+*️⃣ Cómo arrancar el proyecto:
 
-Para ejecutar este backend es necesario tener MySQL instalado y en funcionamiento en el equipo.
-Es imprescindible configurar los siguientes valores en el archivo: application.propierties 
-(situado en src/main/resources/application.properties). 
+🐳 Con Docker (recomendado)
 
-Con tus datos:
+Solo es necesario tener Docker Desktop instalado y en funcionamiento.
+No hace falta instalar Java, Maven ni MySQL.
 
--spring.datasource.username=TU_USUARIO
+Desde la carpeta del proyecto, ejecutar:
 
--spring.datasource.password=TU_PASSWORD
+docker compose up --build
 
--jwt.secret=TU_SECRET_KEY
+Cuando en los logs aparezca "🚀 SISTEMA LISTO PARA SER PROBADO", la aplicación estará disponible en:
 
+- Panel web: http://localhost:3000
+- API REST: http://localhost:8080
 
-Solo necesitas esos tres valores para ejecutar el proyecto.
-Se recomienda abrirlo con IntelliJ IDEA y ejecutar la clase principal del proyecto.
+Para detener la aplicación:
 
+docker compose down
 
 
 -----------------------------------------------------------------------------------------------------
