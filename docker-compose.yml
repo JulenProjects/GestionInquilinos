@@ -21,5 +21,12 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
+  frontend:
+        build: ./frontend
+        ports:
+          - "3000:80"
+        depends_on:
+          - app
+
 volumes:
   mysql-data:

@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gestión Inquilinos</title>
+<style>
+  /* reset basico para evitar cosas extrañas*/
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* colores */
+  :root {
+    --azul:        #1a73e8;
+    --azul-claro:  #e8f0fe;
+    --verde:       #1e8e3e;
+    --verde-claro: #e6f4ea;
+    --rojo:        #d93025;
+    --rojo-claro:  #fce8e6;
+    --fondo:       #f1f3f4;
+    --blanco:      #ffffff;
+    --borde:       #dadce0;
+    --texto:       #202124;
+    --gris:        #5f6368;
+    --radio:       6px;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    font-size: 14px;
+  }
+
+  /* CABECERS*/
+  header {
+    background: var(--azul);
+    color: white;
+    padding: 0 20px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header h1 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  /* informacion   del usuario que ha iniciado sesion */
+  #info-usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  #btn-salir {
+    background: white;
+    color: var(--azul);
+    border: none;
+    padding: 5px 12px;
+    border-radius: var(--radio);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  #btn-salir:hover {
+    background: #e8f0fe;
+  }
+
+  /* layout principal*/
+  .contenedor {
+    display: flex;
+    height: calc(100vh - 56px);
+  }
+
+  /* menú lateral */
+  nav {
+    width: 180px;
+    background: var(--blanco);
+    border-right: 1px solid var(--borde);
+    padding-top: 10px;
+    flex-shrink: 0;
+  }
+
+  /* cada opcion del menu */
+  .nav-item {
+    display: block;
+    padding: 10px 16px;
+    color: var(--gris);
+    cursor: pointer;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+  }
+
+  .nav-item:hover {
+    background: var(--fondo);
+    color: var(--texto);
+  }
+
+  /* la opcion activa se pone en azul */
+  .nav-item.activo {
+    background: var(--azul-claro);
+    color: var(--azul);
+    border-left-color: var(--azul);
+    font-weight: bold;
+  }
+
+  /* contenido general */
+  main {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  /* cabecera de cada pagina con titulo y boton añadir */
+  .cab-pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .cab-pagina h2 {
+    font-size: 20px;
+  }
+
+  .cab-pagina p {
+    font-size: 12px;
+    color: var(--gris);
+    margin-top: 2px;
+  }
+
+  /* targetas estadisticas  */
+  .stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 14px 18px;
+    min-width: 110px;
+  }
+
+  .stat-nombre {
+    font-size: 11px;
+    color: var(--gris);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .stat-numero {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  /* TABLA   */
+  .tabla-contenedor {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--fondo);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--gris);
+    border-bottom: 1px solid var(--borde);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--borde);
+  }
+
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: var(--fondo);
+  }
+
+  tbody td {
+    padding: 10px 14px;
+    vertical-align: middle;
+  }
+
+  /* ============ BOTONES ============ */
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radio);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  /* boton principal azul */
+  .btn-azul {
+    background: var(--azul);
+    color: white;
+  }
+
+  .btn-azul:hover {
+    background: #1557b0;
+  }
+
+  /* boton secundario con borde */
+  .btn-gris {
+    background: white;
+    border: 1px solid var(--borde);
+    color: var(--texto);
+  }
+
+  .btn-gris:hover {
+    background: var(--fondo);
+  }
+
+  /* botones pequeños de la tabla */
+  .btn-editar {
+    background: var(--azul-claro);
+    color: var(--azul);
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 4px;
+  }
+
+  .btn-editar:hover {
+    background: #c5d8fc;
+  }
+
+  .btn-borrar {
+    background: var(--rojo-claro);
+    color: var(--rojo);
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .btn-borrar:hover {
+    background: #f5c5c2;
+  }
+
+  /* ETIQUETAS DE ESTADO*/
+  .etiqueta {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .etiqueta-verde {
+    background: var(--verde-claro);
+    color: var(--verde);
+  }
+
+  .etiqueta-azul {
+    background: var(--azul-claro);
+    color: var(--azul);
+  }
+
+  .etiqueta-rojo {
+    background: var(--rojo-claro);
+    color: var(--rojo);
+  }
+
+  /* ventana emergente */
+  .modal-fondo {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+  }
+
+  .modal {
+    background: var(--blanco);
+    border-radius: 8px;
+    padding: 24px;
+    width: 420px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  .modal-botones {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+
+  /* CAMPOS FORMULARIO*/
+  .campo {
+    margin-bottom: 12px;
+  }
+
+  .campo label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--gris);
+    margin-bottom: 4px;
+  }
+
+  .campo input,
+  .campo select {
+    width: 100%;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 8px 10px;
+    font-size: 13px;
+    background: var(--fondo);
+    outline: none;
+  }
+
+  .campo input:focus,
+  .campo select:focus {
+    border-color: var(--azul);
+    background: white;
+  }
+
+  .campo small {
+    font-size: 11px;
+    color: var(--gris);
+    margin-top: 3px;
+    display: block;
+  }
+
+  /*PANTALLA DEL LOGIN  */
+  #pantalla-login {
+    position: fixed;
+    inset: 0;
+    background: var(--fondo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+
+  .caja-login {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 32px;
+    width: 320px;
+  }
+
+  .caja-login h2 {
+    color: var(--azul);
+    margin-bottom: 4px;
+  }
+
+  .caja-login p {
+    font-size: 12px;
+    color: var(--gris);
+    margin-bottom: 20px;
+  }
+
+  .caja-login label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .caja-login input {
+    width: 100%;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 8px 10px;
+    font-size: 13px;
+    background: var(--fondo);
+    outline: none;
+    margin-bottom: 12px;
+  }
+
+  .caja-login input:focus {
+    border-color: var(--azul);
+    background: white;
+  }
+
+  .caja-login .btn {
+    width: 100%;
+  }
+
+  #error-login {
+    color: var(--rojo);
+    font-size: 12px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* clase para ocultar elementos */
+  .oculto {
+    display: none !important;
+  }
+
+  /* mensaje cuando no hay datos */
+  .sin-datos {
+    text-align: center;
+    padding: 32px;
+    color: var(--gris);
+  }
+</style>
+</head>
+<body>
+
+<!-- PANTALLA DE LOGIN (Se oculta cuando el usuario inicia sesion) -->
+<div id="pantalla-login">
+  <div class="caja-login">
+    <h2>Gestión Inquilinos</h2>
+    <p>Inicia sesión para continuar</p>
+
+	(ponemos el adminPrincipal para que sea mas facil a la hora de entrar, en un entorno real no se debe hacer)
+
+    <label>
+
+Usuario
+
+</label>
+    <input type="text" id="input-usuario" placeholder="adminPrincipal" />
+
+    <label>Contraseña</label>
+    <input type="password" id="input-password"  />
+
+    <button class="btn btn-azul" id="btn-entrar">Entrar</button>
+    <div id="error-login"></div>
+  </div>
+</div>
+
+
+<!-- APP PRINCIPAL - Empieza oculta, se muestra despues de el login -->
+<div id="app" class="oculto">
+
+  <!-- cabecera de arriba -->
+  <header>
+    <h1>Gestión Inquilinos</h1>
+    <div id="info-usuario">
+      <span>Hola, <strong id="nombre-usuario"></strong></span>
+      <button id="btn-salir">Salir</button>
+    </div>
+  </header>
+
+  <div class="contenedor">
+
+    <!-- menu lateral izquierdo -->
+    <nav>
+      <a class="nav-item activo" data-pag="inquilinos">👤 Inquilinos</a>
+      <a class="nav-item" data-pag="inmuebles">🏠 Inmuebles</a>
+      <a class="nav-item" data-pag="pagos">💰 Pagos</a>
+      <a class="nav-item" data-pag="usuarios">⚙️ Usuarios</a>
+    </nav>
+
+    <!-- aqui se carga el contenido de cada pagina -->
+    <main id="contenido">
+      <div class="sin-datos">Cargando...</div>
+    </main>
+
+  </div>
+</div>
+
+
+<!-- es el modal generico, el cual usaremos para TODOS los formularios, es la plantilla -->
+<div id="modal-fondo" class="modal-fondo oculto">
+  <div class="modal">
+    <h3 id="modal-titulo"></h3>
+    <div id="modal-cuerpo"></div>
+    <div class="modal-botones">
+      <button class="btn btn-gris" id="btn-cancelar">Cancelar</button>
+      <button class="btn btn-azul" id="btn-guardar">Guardar</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+// url base del backend, si cambia el puerto solo lo cambio aqui, en principio no se ha de tocar ya que sera ese puerto en local.
+const API = 'http://localhost:8080';
+
+// guardo el token de sesion aqui
+let token = '';
+
+// funcion para llamar a la api
+// recibe el metodo (GET, POST...), la ruta y el cuerpo si hace falta
+function llamarAPI(metodo, ruta, cuerpo) {
+  return fetch(API + ruta, {
+    method: metodo,
+    headers: {
+      'Content-Type': 'application/json',
+      // si tengo token lo mando en la cabecera
+      ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+    },
+    body: cuerpo ? JSON.stringify(cuerpo) : undefined
+  }).then(async respuesta => {
+    // si el servidor devuelve error lo lanzo
+    if (!respuesta.ok) {
+      throw new Error(await respuesta.text() || respuesta.status);
+    }
+    // intento parsear el json, si no hay cuerpo devuelvo null
+    try {
+      return await respuesta.json();
+    } catch {
+      return null;
+    }
+  });
+}
+
+// devuelve el html de una etiqueta de color segun el tipo
+function etiqueta(texto, tipo) {
+  return `<span class="etiqueta etiqueta-${tipo}">${texto}</span>`;
+}
+
+
+// LOGIN
+
+
+document.getElementById('btn-entrar').addEventListener('click', async () => {
+  const usuario  = document.getElementById('input-usuario').value.trim();
+  const password = document.getElementById('input-password').value.trim();
+
+  // borro el error anterior
+  document.getElementById('error-login').textContent = '';
+
+  try {
+    // el backend devuelve { token: "..." } si las credenciales son correctas
+    const respuesta = await llamarAPI('POST', '/acceso/login', { usuario, password });
+    token = respuesta.token;
+
+    // muestro la app y oculto el login
+    document.getElementById('nombre-usuario').textContent = usuario;
+    document.getElementById('pantalla-login').classList.add('oculto');
+    document.getElementById('app').classList.remove('oculto');
+
+    // cargo la pagina de inquilinos por defecto
+    irAPagina('inquilinos');
+
+  } catch {
+    document.getElementById('error-login').textContent = 'Usuario o contraseña incorrectos';
+  }
+});
+
+// tambien funciona pulsando enter en la contraseña
+document.getElementById('input-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-entrar').click();
+});
+
+// boton de cerrar sesion
+document.getElementById('btn-salir').addEventListener('click', () => {
+  token = '';
+  // muestro el login y oculto la app
+  document.getElementById('pantalla-login').classList.remove('oculto');
+  document.getElementById('app').classList.add('oculto');
+  // limpio los campos
+  document.getElementById('input-usuario').value = '';
+  document.getElementById('input-password').value = '';
+});
+
+
+
+// NAVEGACION
+
+
+// añado el evento click a cada item del menu
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => irAPagina(item.dataset.pag));
+});
+
+function irAPagina(pagina) {
+  // marco el activo y desmarco los demas
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('activo', item.dataset.pag === pagina);
+  });
+
+  // muestro un mensaje mientras carga
+  document.getElementById('contenido').innerHTML = '<div class="sin-datos">Cargando...</div>';
+
+  // llamo a la funcion de cada pagina
+  if (pagina === 'inquilinos') paginaInquilinos();
+  if (pagina === 'inmuebles')  paginaInmuebles();
+  if (pagina === 'pagos')      paginaPagos();
+  if (pagina === 'usuarios')   paginaUsuarios();
+}
+
+
+// guardo aqui la funcion que se ejecuta al pulsar guardar
+let funcionGuardar = null;
+
+document.getElementById('btn-cancelar').addEventListener('click', cerrarModal);
+document.getElementById('btn-guardar').addEventListener('click', () => {
+  if (funcionGuardar) funcionGuardar();
+});
+
+// cerrar el modal si se hace click fuera
+document.getElementById('modal-fondo').addEventListener('click', e => {
+  if (e.target === e.currentTarget) cerrarModal();
+});
+
+function abrirModal(titulo, html, alGuardar) {
+  document.getElementById('modal-titulo').textContent = titulo;
+  document.getElementById('modal-cuerpo').innerHTML = html;
+  funcionGuardar = alGuardar;
+  document.getElementById('modal-fondo').classList.remove('oculto');
+}
+
+function cerrarModal() {
+  document.getElementById('modal-fondo').classList.add('oculto');
+}
+
+
+
+// PAGINA INQUILINOS
+// el backend devuelve: idInquilino, nombre, dni, telefono, email
+
+
+async function paginaInquilinos() {
+  let lista = [];
+
+  try {
+    lista = await llamarAPI('GET', '/inquilinos/listado');
+  } catch {
+    // si falla dejo la lista vacia
+  }
+
+  document.getElementById('contenido').innerHTML = `
+    <div class="cab-pagina">
+      <div>
+        <h2>Inquilinos</h2>
+        <p>${lista.length} registros</p>
+      </div>
+      <button class="btn btn-azul" id="btn-nuevo-inq">+ Nuevo inquilino</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-nombre">Total</div>
+        <div class="stat-numero">${lista.length}</div>
+      </div>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lista.length
+            ? lista.map(inq => `
+              <tr>
+                <td>#${inq.idInquilino}</td>
+                <td><strong>${inq.nombre}</strong></td>
+                <td>${inq.dni || '—'}</td>
+                <td>${inq.telefono || '—'}</td>
+                <td>${inq.email || '—'}</td>
+                <td>
+                  <button class="btn-editar" onclick="editarInquilino(${inq.idInquilino})">Editar</button>
+                  <button class="btn-borrar" onclick="borrarInquilino(${inq.idInquilino})">Borrar</button>
+                </td>
+              </tr>
+            `).join('')
+            : '<tr><td colspan="6"><div class="sin-datos">No hay inquilinos</div></td></tr>'
+          }
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('btn-nuevo-inq').onclick = () => nuevoInquilino();
+}
+
+// html del formulario de inquilino, si recibo datos los relleno
+function formularioInquilino(inq = {}) {
+  return `
+    <div class="campo">
+      <label>Nombre</label>
+      <input id="f-nombre" value="${inq.nombre || ''}" />
+    </div>
+    <div class="campo">
+      <label>DNI</label>
+      <input id="f-dni" value="${inq.dni || ''}" />
+    </div>
+    <div class="campo">
+      <label>Teléfono</label>
+      <input id="f-tel" value="${inq.telefono || ''}" />
+    </div>
+    <div class="campo">
+      <label>Email</label>
+      <input id="f-email" value="${inq.email || ''}" />
+    </div>
+  `;
+}
+
+function nuevoInquilino() {
+  abrirModal('Nuevo inquilino', formularioInquilino(), async () => {
+    try {
+      await llamarAPI('POST', '/inquilinos/listado', {
+        nombre:   document.getElementById('f-nombre').value,
+        dni:      document.getElementById('f-dni').value,
+        telefono: document.getElementById('f-tel').value,
+        email:    document.getElementById('f-email').value,
+      });
+      cerrarModal();
+      paginaInquilinos(); // recargo la tabla
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function editarInquilino(id) {
+  // primero busco los datos del inquilino que quiero editar
+  let lista = [];
+  try {
+    lista = await llamarAPI('GET', '/inquilinos/listado');
+  } catch {}
+
+  const inq = lista.find(x => x.idInquilino === id) || {};
+
+  abrirModal('Editar inquilino', formularioInquilino(inq), async () => {
+    try {
+      await llamarAPI('PUT', '/inquilinos/listado/' + id, {
+        nombre:   document.getElementById('f-nombre').value,
+        dni:      document.getElementById('f-dni').value,
+        telefono: document.getElementById('f-tel').value,
+        email:    document.getElementById('f-email').value,
+      });
+      cerrarModal();
+      paginaInquilinos();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function borrarInquilino(id) {
+  if (!confirm('¿Seguro que quieres borrar el inquilino #' + id + '?')) return;
+
+  try {
+    await llamarAPI('DELETE', '/inquilinos/listado/' + id);
+    paginaInquilinos();
+  } catch (err) {
+    alert('Error al borrar: ' + err.message);
+  }
+}
+
+
+
+// PAGINA INMUEBLES----
+// el backend devuelve: idInmueble, direccion, ciudad, codigoPostal, precioMensual, estado, idInquilino
+// el estado puede ser: OCUPADO, VACIO, CON_DEUDA
+
+
+async function paginaInmuebles() {
+  let lista = [];
+
+  try {
+    lista = await llamarAPI('GET', '/inmuebles/listado');
+  } catch {}
+
+  // cuento cuantos hay de cada estado para las estadisticas
+  const ocupados = lista.filter(i => i.estado === 'OCUPADO').length;
+  const vacios   = lista.filter(i => i.estado === 'VACIO').length;
+  const conDeuda = lista.filter(i => i.estado === 'CON_DEUDA').length;
+
+  // funcion para pintar la etiqueta de estado con su color
+  function etiquetaEstado(estado) {
+    if (estado === 'OCUPADO')   return etiqueta('Ocupado', 'verde');
+    if (estado === 'VACIO')     return etiqueta('Vacío', 'azul');
+    return etiqueta('Con deuda', 'rojo');
+  }
+
+  document.getElementById('contenido').innerHTML = `
+    <div class="cab-pagina">
+      <div>
+        <h2>Inmuebles</h2>
+        <p>${lista.length} propiedades</p>
+      </div>
+      <button class="btn btn-azul" id="btn-nuevo-inm">+ Nuevo inmueble</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-nombre">Total</div>
+        <div class="stat-numero">${lista.length}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-nombre">Ocupados</div>
+        <div class="stat-numero" style="color:var(--verde)">${ocupados}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-nombre">Vacíos</div>
+        <div class="stat-numero" style="color:var(--azul)">${vacios}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-nombre">Con deuda</div>
+        <div class="stat-numero" style="color:var(--rojo)">${conDeuda}</div>
+      </div>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Dirección</th>
+            <th>Ciudad</th>
+            <th>CP</th>
+            <th>€/mes</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lista.length
+            ? lista.map(inm => `
+              <tr>
+                <td>#${inm.idInmueble}</td>
+                <td><strong>${inm.direccion}</strong></td>
+                <td>${inm.ciudad || '—'}</td>
+                <td>${inm.codigoPostal || '—'}</td>
+                <td>${inm.precioMensual ? inm.precioMensual.toFixed(2) + ' €' : '—'}</td>
+                <td>${etiquetaEstado(inm.estado)}</td>
+                <td>
+                  <button class="btn-editar" onclick="editarInmueble(${inm.idInmueble})">Editar</button>
+                  <button class="btn-borrar" onclick="borrarInmueble(${inm.idInmueble})">Borrar</button>
+                </td>
+              </tr>
+            `).join('')
+            : '<tr><td colspan="7"><div class="sin-datos">No hay inmuebles</div></td></tr>'
+          }
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('btn-nuevo-inm').onclick = () => nuevoInmueble();
+}
+
+// esta funcion es async porque necesito cargar la lista de inquilinos para el select
+async function formularioInmueble(inm = {}) {
+  let inquilinos = [];
+  try {
+    inquilinos = await llamarAPI('GET', '/inquilinos/listado');
+  } catch {}
+
+  // opciones del select de inquilinos
+  const opcionesInquilinos = `<option value="">— Sin inquilino —</option>` +
+    inquilinos.map(inq =>
+      `<option value="${inq.idInquilino}" ${inm.idInquilino === inq.idInquilino ? 'selected' : ''}>
+        ${inq.nombre}
+      </option>`
+    ).join('');
+
+  return `
+    <div class="campo">
+      <label>Dirección</label>
+      <input id="f-dir" value="${inm.direccion || ''}" />
+    </div>
+    <div class="campo">
+      <label>Ciudad</label>
+      <input id="f-ciudad" value="${inm.ciudad || ''}" />
+    </div>
+    <div class="campo">
+      <label>Código Postal</label>
+      <input id="f-cp" value="${inm.codigoPostal || ''}" />
+    </div>
+    <div class="campo">
+      <label>Precio mensual (€)</label>
+      <input id="f-precio" type="number" step="0.01" value="${inm.precioMensual || ''}" />
+    </div>
+    <div class="campo">
+      <label>Estado</label>
+      <select id="f-estado">
+        <option value="OCUPADO"   ${inm.estado === 'OCUPADO'   ? 'selected' : ''}>Ocupado</option>
+        <option value="VACIO"     ${inm.estado === 'VACIO'     ? 'selected' : ''}>Vacío</option>
+        <option value="CON_DEUDA" ${inm.estado === 'CON_DEUDA' ? 'selected' : ''}>Con deuda</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label>Inquilino asignado</label>
+      <select id="f-inq">${opcionesInquilinos}</select>
+    </div>
+  `;
+}
+
+async function nuevoInmueble() {
+  abrirModal('Nuevo inmueble', await formularioInmueble(), async () => {
+    const idInq = document.getElementById('f-inq').value;
+    try {
+      await llamarAPI('POST', '/inmuebles/listado', {
+        direccion:     document.getElementById('f-dir').value,
+        ciudad:        document.getElementById('f-ciudad').value,
+        codigoPostal:  document.getElementById('f-cp').value,
+        precioMensual: parseFloat(document.getElementById('f-precio').value) || 0,
+        estado:        document.getElementById('f-estado').value,
+        // si se ha elegido un inquilino mando su id, si no mando null
+        inquilino: idInq ? { idInquilino: parseInt(idInq) } : null,
+      });
+      cerrarModal();
+      paginaInmuebles();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function editarInmueble(id) {
+  let lista = [];
+  try {
+    lista = await llamarAPI('GET', '/inmuebles/listado');
+  } catch {}
+
+  const inm = lista.find(x => x.idInmueble === id) || {};
+
+  abrirModal('Editar inmueble', await formularioInmueble(inm), async () => {
+    const idInq = document.getElementById('f-inq').value;
+    try {
+      await llamarAPI('PUT', '/inmuebles/listado/' + id, {
+        direccion:     document.getElementById('f-dir').value,
+        ciudad:        document.getElementById('f-ciudad').value,
+        codigoPostal:  document.getElementById('f-cp').value,
+        precioMensual: parseFloat(document.getElementById('f-precio').value) || 0,
+        estado:        document.getElementById('f-estado').value,
+        inquilino: idInq ? { idInquilino: parseInt(idInq) } : null,
+      });
+      cerrarModal();
+      paginaInmuebles();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function borrarInmueble(id) {
+  if (!confirm('¿Seguro que quieres borrar el inmueble #' + id + '?')) return;
+
+  try {
+    await llamarAPI('DELETE', '/inmuebles/listado/' + id);
+    paginaInmuebles();
+  } catch (err) {
+    alert('Error al borrar: ' + err.message);
+  }
+}
+
+
+
+// PAGINA PAGOS--------------
+// el backend devuelve: idPago, anio, mes, precioAlquiler, montoDeuda, pagado, idInquilino, idInmueble
+// ojo: el importe del alquiler se llama precioAlquiler en el DTO
+// ================================
+
+async function paginaPagos() {
+  let lista = [];
+  let impagos = [];
+
+  try {
+    lista   = await llamarAPI('GET', '/pagos/listado');
+  } catch {}
+
+  try {
+    impagos = await llamarAPI('GET', '/pagos/listado/impagos');
+  } catch {}
+
+  // sumo el total cobrado (solo los que tienen pagado = true)
+  const totalCobrado = lista
+    .filter(p => p.pagado)
+    .reduce((suma, p) => suma + (p.precioAlquiler || 0), 0);
+
+  // sumo la deuda total (solo los que no estan pagados)
+  const totalDeuda = lista
+    .filter(p => !p.pagado)
+    .reduce((suma, p) => suma + (p.montoDeuda || 0), 0);
+
+  document.getElementById('contenido').innerHTML = `
+    <div class="cab-pagina">
+      <div>
+        <h2>Pagos</h2>
+        <p>${lista.length} registros</p>
+      </div>
+      <button class="btn btn-azul" id="btn-nuevo-pago">+ Nuevo pago</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-nombre">Total</div>
+        <div class="stat-numero">${lista.length}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-nombre">Cobrado</div>
+        <div class="stat-numero" style="color:var(--verde)">${totalCobrado.toFixed(2)} €</div>
+      </div>
+      <div class="stat">
+        <div class="stat-nombre">Impagos</div>
+        <div class="stat-numero" style="color:var(--rojo)">${impagos.length}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-nombre">Deuda total</div>
+        <div class="stat-numero" style="color:var(--rojo)">${totalDeuda.toFixed(2)} €</div>
+      </div>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Año</th>
+            <th>Mes</th>
+            <th>Importe</th>
+            <th>Deuda</th>
+            <th>Estado</th>
+            <th>Inquilino</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lista.length
+            ? lista.map(p => `
+              <tr>
+                <td>#${p.idPago}</td>
+                <td>${p.anio}</td>
+                <td>${p.mes}</td>
+                <td>${p.precioAlquiler ? p.precioAlquiler.toFixed(2) + ' €' : '—'}</td>
+                <td>${(p.montoDeuda || 0).toFixed(2)} €</td>
+                <td>${p.pagado ? etiqueta('Pagado', 'verde') : etiqueta('Pendiente', 'rojo')}</td>
+                <td>${p.idInquilino ? '#' + p.idInquilino : '—'}</td>
+                <td>
+                  <button class="btn-editar" onclick="editarPago(${p.idPago})">Editar</button>
+                  <button class="btn-borrar" onclick="borrarPago(${p.idPago})">Borrar</button>
+                </td>
+              </tr>
+            `).join('')
+            : '<tr><td colspan="8"><div class="sin-datos">No hay pagos</div></td></tr>'
+          }
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('btn-nuevo-pago').onclick = () => nuevoPago();
+}
+
+// formulario de pago: cargo inquilinos e inmuebles para los selects
+async function formularioPago(pago = {}) {
+  let inquilinos = [];
+  let inmuebles  = [];
+
+  try { inquilinos = await llamarAPI('GET', '/inquilinos/listado'); } catch {}
+  try { inmuebles  = await llamarAPI('GET', '/inmuebles/listado');  } catch {}
+
+  const opcionesInquilinos = `<option value="">— Seleccionar —</option>` +
+    inquilinos.map(inq =>
+      `<option value="${inq.idInquilino}" ${pago.idInquilino === inq.idInquilino ? 'selected' : ''}>
+        ${inq.nombre}
+      </option>`
+    ).join('');
+
+  // guardo el precio mensual en data-precio para usarlo cuando cambie el select
+  const opcionesInmuebles = `<option value="">— Seleccionar —</option>` +
+    inmuebles.map(inm =>
+      `<option value="${inm.idInmueble}" data-precio="${inm.precioMensual || 0}" ${pago.idInmueble === inm.idInmueble ? 'selected' : ''}>
+        ${inm.direccion}
+      </option>`
+    ).join('');
+
+  // si el pago ya tenia un inmueble, busco su precio para ponerlo por defecto
+  let precioInicial = '';
+  if (pago.idInmueble) {
+    const inm = inmuebles.find(i => i.idInmueble === pago.idInmueble);
+    if (inm && inm.precioMensual) precioInicial = inm.precioMensual.toFixed(2);
+  }
+
+  return `
+    <div class="campo">
+      <label>Año</label>
+      <input id="f-anio" type="number" value="${pago.anio || new Date().getFullYear()}" />
+    </div>
+    <div class="campo">
+      <label>Mes (1-12)</label>
+      <input id="f-mes" type="number" min="1" max="12" value="${pago.mes || ''}" />
+    </div>
+    <div class="campo">
+      <label>Importe (€)</label>
+      <input id="f-importe" type="number" step="0.01"
+             value="${precioInicial}"
+             placeholder="Se rellena al elegir inmueble"
+             readonly
+             style="background:#e8f0fe; color:var(--azul); font-weight:bold; cursor:not-allowed" />
+      <small>Se rellena automáticamente al elegir el inmueble</small>
+    </div>
+    <div class="campo">
+      <label>Deuda pendiente (€)</label>
+      <input id="f-deuda" type="number" step="0.01" value="${pago.montoDeuda || 0}" />
+      <small>Pon 0 si está al día</small>
+    </div>
+    <div class="campo">
+      <label>Estado</label>
+      <select id="f-pagado" onchange="
+        if (this.value === 'true') {
+          document.getElementById('f-deuda').value = '0';
+          document.getElementById('f-deuda').disabled = true;
+        } else {
+          document.getElementById('f-deuda').disabled = false;
+        }
+      ">
+        <option value="true"  ${pago.pagado === true  ? 'selected' : ''}>Pagado</option>
+        <option value="false" ${pago.pagado === false  ? 'selected' : ''}>Pendiente</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label>Inquilino</label>
+      <select id="f-inq">${opcionesInquilinos}</select>
+    </div>
+    <div class="campo">
+      <label>Inmueble</label>
+      <select id="f-inm" onchange="
+        const opcion = this.options[this.selectedIndex];
+        const precio = opcion ? parseFloat(opcion.dataset.precio) : 0;
+        // cuando cambio el inmueble, actualizo el campo importe con su precio mensual
+        document.getElementById('f-importe').value = precio > 0 ? precio.toFixed(2) : '';
+      ">${opcionesInmuebles}</select>
+    </div>
+    <script>
+      // si al abrir ya tenia pagado=true, bloqueo el campo deuda
+      if (document.getElementById('f-pagado').value === 'true') {
+        document.getElementById('f-deuda').value = '0';
+        document.getElementById('f-deuda').disabled = true;
+      }
+    <\/script>
+  `;
+}
+
+async function nuevoPago() {
+  abrirModal('Nuevo pago', await formularioPago(), async () => {
+    const idInq    = document.getElementById('f-inq').value;
+    const idInm    = document.getElementById('f-inm').value;
+    const importe  = parseFloat(document.getElementById('f-importe').value) || 0;
+
+    try {
+      await llamarAPI('POST', '/pagos/listado/nuevo', {
+        anio:           parseInt(document.getElementById('f-anio').value),
+        mes:            parseInt(document.getElementById('f-mes').value),
+        precioAlquiler: importe,
+        montoDeuda:     parseFloat(document.getElementById('f-deuda').value) || 0,
+        pagado:         document.getElementById('f-pagado').value === 'true',
+        inquilino: idInq ? { idInquilino: parseInt(idInq) } : null,
+        inmueble:  idInm ? { idInmueble:  parseInt(idInm) } : null,
+      });
+      cerrarModal();
+      paginaPagos();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function editarPago(id) {
+  let lista = [];
+  try {
+    lista = await llamarAPI('GET', '/pagos/listado');
+  } catch {}
+
+  const pago = lista.find(x => x.idPago === id) || {};
+
+  abrirModal('Editar pago', await formularioPago(pago), async () => {
+    const idInq   = document.getElementById('f-inq').value;
+    const idInm   = document.getElementById('f-inm').value;
+    const importe = parseFloat(document.getElementById('f-importe').value) || 0;
+
+    try {
+      await llamarAPI('PUT', '/pagos/listado/' + id, {
+        anio:           parseInt(document.getElementById('f-anio').value),
+        mes:            parseInt(document.getElementById('f-mes').value),
+        precioAlquiler: importe,
+        montoDeuda:     parseFloat(document.getElementById('f-deuda').value) || 0,
+        pagado:         document.getElementById('f-pagado').value === 'true',
+        inquilino: idInq ? { idInquilino: parseInt(idInq) } : null,
+        inmueble:  idInm ? { idInmueble:  parseInt(idInm) } : null,
+      });
+      cerrarModal();
+      paginaPagos();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function borrarPago(id) {
+  if (!confirm('¿Seguro que quieres borrar el pago #' + id + '?')) return;
+
+  try {
+    await llamarAPI('DELETE', '/pagos/listado/' + id);
+    paginaPagos();
+  } catch (err) {
+    alert('Error al borrar: ' + err.message);
+  }
+}
+
+
+
+// PAGINA USUARIOS--
+// solo deberia entrar un admin
+// el backend devuelve: idUsuario, usuario, role
+
+
+async function paginaUsuarios() {
+  let lista = [];
+
+  try {
+    lista = await llamarAPI('GET', '/usuarios/listado');
+  } catch {}
+
+  document.getElementById('contenido').innerHTML = `
+    <div class="cab-pagina">
+      <div>
+        <h2>Usuarios</h2>
+        <p>${lista.length} registros · solo ADMIN</p>
+      </div>
+      <button class="btn btn-azul" id="btn-nuevo-usr">+ Nuevo usuario</button>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lista.length
+            ? lista.map(usr => `
+              <tr>
+                <td>#${usr.idUsuario}</td>
+                <td><strong>${usr.usuario}</strong></td>
+                <td>${usr.role === 'ADMIN' ? etiqueta('ADMIN', 'verde') : etiqueta('USER', 'azul')}</td>
+                <td>
+                  <button class="btn-editar" onclick="editarUsuario(${usr.idUsuario})">Editar</button>
+                  <button class="btn-borrar" onclick="borrarUsuario(${usr.idUsuario})">Borrar</button>
+                </td>
+              </tr>
+            `).join('')
+            : '<tr><td colspan="4"><div class="sin-datos">No hay usuarios</div></td></tr>'
+          }
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('btn-nuevo-usr').onclick = () => nuevoUsuario();
+}
+
+function formularioUsuario(usr = {}) {
+  return `
+    <div class="campo">
+      <label>Nombre de usuario</label>
+      <input id="f-usr" value="${usr.usuario || ''}" />
+    </div>
+    <div class="campo">
+      <label>Contraseña ${usr.idUsuario ? '(vacío = no cambiar)' : ''}</label>
+      <input id="f-pwd" type="password" />
+    </div>
+    <div class="campo">
+      <label>Rol</label>
+      <select id="f-rol">
+        <option value="ADMIN" ${usr.role === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+        <option value="USER"  ${usr.role === 'USER'  ? 'selected' : ''}>USER</option>
+      </select>
+    </div>
+  `;
+}
+
+function nuevoUsuario() {
+  abrirModal('Nuevo usuario', formularioUsuario(), async () => {
+    try {
+      await llamarAPI('POST', '/usuarios/listado/nuevo', {
+        usuario:  document.getElementById('f-usr').value,
+        password: document.getElementById('f-pwd').value,
+        role:     document.getElementById('f-rol').value,
+      });
+      cerrarModal();
+      paginaUsuarios();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function editarUsuario(id) {
+  let lista = [];
+  try {
+    lista = await llamarAPI('GET', '/usuarios/listado');
+  } catch {}
+
+  const usr = lista.find(x => x.idUsuario === id) || {};
+
+  abrirModal('Editar usuario', formularioUsuario(usr), async () => {
+    const pwd = document.getElementById('f-pwd').value;
+    try {
+      await llamarAPI('PUT', '/usuarios/listado/' + id, {
+        usuario: document.getElementById('f-usr').value,
+        role:    document.getElementById('f-rol').value,
+        // solo mando la contraseña si la ha escrito, si no la dejo como esta
+        ...(pwd ? { password: pwd } : {})
+      });
+      cerrarModal();
+      paginaUsuarios();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+}
+
+async function borrarUsuario(id) {
+  if (!confirm('¿Seguro que quieres borrar el usuario #' + id + '?')) return;
+
+  try {
+    await llamarAPI('DELETE', '/usuarios/listado/' + id);
+    paginaUsuarios();
+  } catch (err) {
+    alert('Error al borrar: ' + err.message);
+  }
+}
+
+</script>
+</body>
+</html>
